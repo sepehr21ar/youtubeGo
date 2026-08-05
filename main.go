@@ -4,56 +4,56 @@ import (
 	"log"
 	"net/http"
 
-	_ "project/docs"
+	_ "project/docs" // after running swag init
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @BasePath /api/v1
-
-// PingExample godoc
-// @Summary ping example
-// @Schemes
-// @Description do ping
-// @Tags example
-// @Accept json
-// @Produce json
-// @Success 200 {string} Helloworld
-// @Router /user/getlist [get]
-func TestHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, "I am test handler")
+type UserCommandDto struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Age      int    `json:"age" binding:"required"`
 }
 
-// PingExample godoc
-// @Summary ping example
-// @Schemes
-// @Description do ping
-// @Tags example
-// @Accept json
-// @Produce json
-// @Success 200 {string} Helloworld
-// @Router /user/create [post]
-func UserCreateHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, "I am test handler")
+// @title           Example API
+// @version         1.0
+// @description     Minimal Gin + Swagger example
+// @host            localhost:8000
+// @BasePath        /api/v1
+// @schemes         http
+
+// TestHandler godoc
+// @Summary         ping example
+// @Description     do ping
+// @Tags            example
+// @Accept          json
+// @Produce         json
+// @Param           user  body  UserCommandDto  true  "send id"
+// @Success         200  {string}  string
+// @Router          /user/userdetail [post]
+func TestHandler(c *gin.Context) {
+	var user UserCommandDto
+	c.ShouldBindJSON(&user)
+	c.JSON(http.StatusOK, user)
+
 }
 
 func main() {
-
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 	api := r.Group("/api/v1")
 	{
 		user := api.Group("/user")
 		{
-			user.GET("/getlist", TestHandler)
-			user.POST("/create", TestHandler)
-
+			user.POST("/userdetail", TestHandler) // consistent path, no trailing slash
 		}
-
 	}
-	log.Println("Starting server")
-	r.Run(":8000")
 
+	log.Println("Starting server on :8000")
+	if err := r.Run(":8000"); err != nil {
+		log.Fatal(err)
+	}
 }

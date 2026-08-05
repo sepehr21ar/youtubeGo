@@ -1,11 +1,18 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Minimal Gin + Swagger example",
+        "title": "Example API",
+        "contact": {},
+        "version": "1.0"
     },
+    "host": "localhost:8000",
     "basePath": "/api/v1",
     "paths": {
-        "/user/create": {
+        "/user/userdetail": {
             "post": {
                 "description": "do ping",
                 "consumes": [
@@ -18,6 +25,17 @@
                     "example"
                 ],
                 "summary": "ping example",
+                "parameters": [
+                    {
+                        "description": "send id",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.UserCommandDto"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -27,27 +45,25 @@
                     }
                 }
             }
-        },
-        "/user/getlist": {
-            "get": {
-                "description": "do ping",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "example"
-                ],
-                "summary": "ping example",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
+        }
+    },
+    "definitions": {
+        "main.UserCommandDto": {
+            "type": "object",
+            "required": [
+                "age",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }

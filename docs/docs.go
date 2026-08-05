@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user/create": {
+        "/user/userdetail": {
             "post": {
                 "description": "do ping",
                 "consumes": [
@@ -28,29 +28,17 @@ const docTemplate = `{
                     "example"
                 ],
                 "summary": "ping example",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "parameters": [
+                    {
+                        "description": "send id",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/main.UserCommandDto"
                         }
                     }
-                }
-            }
-        },
-        "/user/getlist": {
-            "get": {
-                "description": "do ping",
-                "consumes": [
-                    "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "example"
-                ],
-                "summary": "ping example",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -61,17 +49,38 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "definitions": {
+        "main.UserCommandDto": {
+            "type": "object",
+            "required": [
+                "age",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
+	Version:          "1.0",
+	Host:             "localhost:8000",
 	BasePath:         "/api/v1",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Schemes:          []string{"http"},
+	Title:            "Example API",
+	Description:      "Minimal Gin + Swagger example",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

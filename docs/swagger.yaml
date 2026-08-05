@@ -1,12 +1,37 @@
 basePath: /api/v1
+definitions:
+  main.UserCommandDto:
+    properties:
+      age:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - age
+    - password
+    - username
+    type: object
+host: localhost:8000
 info:
   contact: {}
+  description: Minimal Gin + Swagger example
+  title: Example API
+  version: "1.0"
 paths:
-  /user/create:
+  /user/userdetail:
     post:
       consumes:
       - application/json
       description: do ping
+      parameters:
+      - description: send id
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/main.UserCommandDto'
       produces:
       - application/json
       responses:
@@ -17,19 +42,6 @@ paths:
       summary: ping example
       tags:
       - example
-  /user/getlist:
-    get:
-      consumes:
-      - application/json
-      description: do ping
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: ping example
-      tags:
-      - example
+schemes:
+- http
 swagger: "2.0"
