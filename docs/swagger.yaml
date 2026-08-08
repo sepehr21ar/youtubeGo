@@ -20,6 +20,37 @@ info:
   title: Example API
   version: "1.0"
 paths:
+  /user/add:
+    post:
+      consumes:
+      - multipart/form-data
+      description: add user
+      parameters:
+      - description: enter the name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: enter the family
+        in: formData
+        name: family
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: file_data
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: adding new user
+      tags:
+      - User
   /user/userdetail:
     post:
       consumes:

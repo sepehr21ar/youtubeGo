@@ -40,6 +40,37 @@ func TestHandler(c *gin.Context) {
 
 }
 
+// @title           Example API
+// @version         1.0
+// @description     Minimal Gin + Swagger example
+// @host            localhost:8000
+// @BasePath        /api/v1
+// @schemes         http
+
+// TestHandler godoc
+// @Summary         adding new user
+// @Description     add user
+// @Tags            User
+// @Accept          multipart/form-data
+// @Produce         json
+// @Param           name formData string true  "enter the name"
+// @Param           family formData string true  "enter the family"
+// @Param file_data formData file true "image"
+// @Success         200  {string}  string
+// @Router          /user/add [post]
+func CreateUserHandler(c *gin.Context) {
+	name := c.PostForm("name")
+	family := c.PostForm("family")
+	fileRecieve, err := c.FormFile("file_data")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	path := "./upload/" + fileRecieve.Filename
+	c.SaveUploadedFile(fileRecieve, path)
+	c.JSON(http.StatusOK, fileRecieve.Filename+name+family)
+
+}
+
 func main() {
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
@@ -49,6 +80,7 @@ func main() {
 		user := api.Group("/user")
 		{
 			user.POST("/userdetail", TestHandler) // consistent path, no trailing slash
+			user.POST("/add", CreateUserHandler)
 		}
 	}
 
