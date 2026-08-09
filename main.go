@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	_ "project/docs" // after running swag init
+	"project/middle"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -79,7 +80,7 @@ func main() {
 	{
 		user := api.Group("/user")
 		{
-			user.POST("/userdetail", TestHandler) // consistent path, no trailing slash
+			user.POST("/userdetail", middle.VersionMiddleWare(), TestHandler) // consistent path, no trailing slash
 			user.POST("/add", CreateUserHandler)
 		}
 	}
