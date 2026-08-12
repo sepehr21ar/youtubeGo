@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	Database "project/DataBase"
 	_ "project/docs" // after running swag init
 	"project/middle"
 
@@ -65,6 +66,7 @@ func CreateUserHandler(c *gin.Context) {
 	fileRecieve, err := c.FormFile("file_data")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	path := "./upload/" + fileRecieve.Filename
 	c.SaveUploadedFile(fileRecieve, path)
@@ -73,6 +75,7 @@ func CreateUserHandler(c *gin.Context) {
 }
 
 func main() {
+	Database.ConDb()
 	r := gin.Default()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
