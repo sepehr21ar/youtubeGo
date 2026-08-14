@@ -5,7 +5,9 @@ import (
 	"net/http"
 
 	Database "project/DataBase"
+	handler "project/Handler"
 	_ "project/docs" // after running swag init
+
 	"project/middle"
 
 	"github.com/gin-gonic/gin"
@@ -60,19 +62,19 @@ func TestHandler(c *gin.Context) {
 // @Param file_data formData file true "image"
 // @Success         200  {string}  string
 // @Router          /user/add [post]
-func CreateUserHandler(c *gin.Context) {
-	name := c.PostForm("name")
-	family := c.PostForm("family")
-	fileRecieve, err := c.FormFile("file_data")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	path := "./upload/" + fileRecieve.Filename
-	c.SaveUploadedFile(fileRecieve, path)
-	c.JSON(http.StatusOK, fileRecieve.Filename+name+family)
+// func CreateUserHandler(c *gin.Context) {
+// 	name := c.PostForm("name")
+// 	family := c.PostForm("family")
+// 	fileRecieve, err := c.FormFile("file_data")
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	path := "./upload/" + fileRecieve.Filename
+// 	c.SaveUploadedFile(fileRecieve, path)
+// 	c.JSON(http.StatusOK, fileRecieve.Filename+name+family)
 
-}
+// }
 
 func main() {
 	Database.ConDb()
@@ -84,7 +86,7 @@ func main() {
 		user := api.Group("/user")
 		{
 			user.POST("/userdetail", middle.VersionMiddleWare(), TestHandler) // consistent path, no trailing slash
-			user.POST("/add", CreateUserHandler)
+			user.POST("/add", handler.UserCreateHandler())
 		}
 	}
 
@@ -92,4 +94,5 @@ func main() {
 	if err := r.Run(":8000"); err != nil {
 		log.Fatal(err)
 	}
+
 }

@@ -1,0 +1,23 @@
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /swagger/*any             --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)
+[GIN-debug] POST   /api/v1/user/userdetail   --> main.TestHandler (4 handlers)
+[GIN-debug] POST   /api/v1/user/add          --> main.CreateUserHandler (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8000
+[GIN] 2026/08/14 - 17:14:27 | 404 |       0s |             ::1 | GET      "/"
+[GIN] 2026/08/14 - 17:14:27 | 404 |       0s |             ::1 | GET      "/favicon.ico"
+[GIN] 2026/08/14 - 17:14:31 | 200 |  78.22ms |             ::1 | GET      "/swagger/index.html"
+[GIN] 2026/08/14 - 17:14:31 | 200 |   3.96ms |             ::1 | GET      "/swagger/index.css"
+[GIN] 2026/08/14 - 17:14:31 | 200 |   8.26ms |             ::1 | GET      "/swagger/swagger-initializer.js"
+[GIN] 2026/08/14 - 17:14:31 | 200 |   9.71ms |             ::1 | GET      "/swagger/swagger-ui.css"
+[GIN] 2026/08/14 - 17:14:31 | 200 |  13.78ms |             ::1 | GET      "/swagger/swagger-ui-standalone-preset.js"
+[GIN] 2026/08/14 - 17:14:31 | 200 |  47.61ms |             ::1 | GET      "/swagger/swagger-ui-bundle.js"
+[GIN] 2026/08/14 - 17:14:31 | 200 |   3.51ms |             ::1 | GET      "/swagger/doc.json"
+[GIN] 2026/08/14 - 17:15:12 | 200 |  12.82ms |             ::1 | POST     "/api/v1/user/add"
+[GIN] 2026/08/14 - 17:15:59 | 400 |  12.76ms |             ::1 | POST     "/api/v1/user/userdetail"
