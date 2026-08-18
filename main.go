@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	Database "project/DataBase"
-	handler "project/Handler"
-	_ "project/docs" // after running swag init
+	_ "project/docs"
+	handler "project/handler"
 
 	"project/middle"
 
@@ -21,78 +21,82 @@ type UserCommandDto struct {
 	Age      int    `json:"age" binding:"required"`
 }
 
-// @title           Example API
-// @version         1.0
-// @description     Minimal Gin + Swagger example
-// @host            localhost:8000
-// @BasePath        /api/v1
-// @schemes         http
+// @title Example API
+// @version 1.0
+// @description Minimal Gin + Swagger example
+// @host localhost:8000
+// @BasePath /api/v1
+// @schemes http
 
 // TestHandler godoc
-// @Summary         ping example
-// @Description     do ping
-// @Tags            example
-// @Accept          json
-// @Produce         json
-// @Param           user  body  UserCommandDto  true  "send id"
-// @Success         200  {string}  string
-// @Router          /user/userdetail [post]
+// @Summary Test handler
+// @Description Echo user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body UserCommandDto true "User information"
+// @Success 200 {object} UserCommandDto
+// @Router /user/userdetail [post]
 func TestHandler(c *gin.Context) {
 	var user UserCommandDto
-	c.ShouldBindJSON(&user)
-	c.JSON(http.StatusOK, user)
 
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }
 
-// @title           Example API
-// @version         1.0
-// @description     Minimal Gin + Swagger example
-// @host            localhost:8000
-// @BasePath        /api/v1
-// @schemes         http
+// UserCreateWrapper godoc
+// @Summary Add new user
+// @Description Create a new user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body userdto.UserCommandDto true "User information"
+// @Success 201 {object} models.User
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /user/add [post]
+func userCreateWrapper(c *gin.Context) {
+	handler.UserCreateHandler(c)
+}
 
-// TestHandler godoc
-// @Summary         adding new user
-// @Description     add user
-// @Tags            User
-// @Accept          multipart/form-data
-// @Produce         json
-// @Param           name formData string true  "enter the name"
-// @Param           family formData string true  "enter the family"
-// @Param file_data formData file true "image"
-// @Success         200  {string}  string
-// @Router          /user/add [post]
-// func CreateUserHandler(c *gin.Context) {
-// 	name := c.PostForm("name")
-// 	family := c.PostForm("family")
-// 	fileRecieve, err := c.FormFile("file_data")
-// 	if err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-// 	path := "./upload/" + fileRecieve.Filename
-// 	c.SaveUploadedFile(fileRecieve, path)
-// 	c.JSON(http.StatusOK, fileRecieve.Filename+name+family)
-
-// }
+// UserListWrapper godoc
+// @Summary Get user list
+// @Description Get all users
+// @Tags User
+// @Produce json
+// @Success 200 {object} map[string][]models.User
+// @Failure 500 {object} map[string]string
+// @Router /user/list [get]
+func userListWrapper(c *gin.Context) {
+	handler.UserListHandler(c)
+}
 
 func main() {
 	Database.ConDb()
+
 	r := gin.Default()
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	api := r.Group("/api/v1")
 	{
 		user := api.Group("/user")
 		{
-			user.POST("/userdetail", middle.VersionMiddleWare(), TestHandler) // consistent path, no trailing slash
-			user.POST("/add", handler.UserCreateHandler())
+			user.POST("/userdetail", middle.VersionMiddleWare(), TestHandler)
+			user.POST("/add", userCreateWrapper)
+			user.GET("/list", userListWrapper)
 		}
 	}
 
 	log.Println("Starting server on :8000")
+
 	if err := r.Run(":8000"); err != nil {
 		log.Fatal(err)
 	}
-
 }

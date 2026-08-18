@@ -10,41 +10,39 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @title           Example API
-// @version         1.0
-// @description     Minimal Gin + Swagger example
-// @host            localhost:8000
-// @BasePath        /api/v1
-// @schemes         http
+// UserCreateHandler godoc
+// @Summary Add new user
+// @Description Create a new user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body userdto.UserCommandDto true "User information"
+// @Success 201 {object} models.User
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /user/add [post]
 
-// TestHandler godoc
-// @Summary         adding new user
-// @Description     add user
-// @Tags            User
-// @Accept          json
-// @Produce         json
-// @Param           user body userdto.UserCommandDto true "user"
-// @Success         200  {object}  models.User
-// @Router          /user/add [post]
+func UserCreateHandler(ctx *gin.Context) {
+	var userCommand userdto.UserCommandDto
 
-func UserCreateHandler() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		var usercommand userdto.UserCommandDto
-		if err := ctx.ShouldBindJSON(&usercommand); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		userobj := models.User{
-			Name:   usercommand.Name,
-			Family: usercommand.Family,
-		}
-
-		if err := Database.DB.Create(&userobj).Error; err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		ctx.JSON(http.StatusOK, userobj)
+	if err := ctx.ShouldBindJSON(&userCommand); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
+
+	userObj := models.User{
+		Name:   userCommand.Name,
+		Family: userCommand.Family,
+	}
+
+	if err := Database.DB.Create(&userObj).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, userObj)
 }

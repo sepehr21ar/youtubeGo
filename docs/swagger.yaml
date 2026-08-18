@@ -13,6 +13,27 @@ definitions:
     - password
     - username
     type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      family:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  userdto.UserCommandDto:
+    properties:
+      family:
+        type: string
+      name:
+        type: string
+    required:
+    - family
+    - name
+    type: object
 host: localhost:8000
 info:
   contact: {}
@@ -20,13 +41,70 @@ info:
   title: Example API
   version: "1.0"
 paths:
+  /user/add:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/userdto.UserCommandDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add new user
+      tags:
+      - User
+  /user/list:
+    get:
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/models.User'
+              type: array
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user list
+      tags:
+      - User
   /user/userdetail:
     post:
       consumes:
       - application/json
-      description: do ping
+      description: Echo user
       parameters:
-      - description: send id
+      - description: User information
         in: body
         name: user
         required: true
@@ -38,10 +116,10 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
-      summary: ping example
+            $ref: '#/definitions/main.UserCommandDto'
+      summary: Test handler
       tags:
-      - example
+      - User
 schemes:
 - http
 swagger: "2.0"
