@@ -75,6 +75,44 @@ paths:
       summary: Add new user
       tags:
       - User
+  /user/delete/{id}:
+    delete:
+      description: Delete a user by ID
+      parameters:
+      - description: ID of target user
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete user
+      tags:
+      - User
   /user/list:
     get:
       description: Get all users

@@ -77,6 +77,9 @@ func userListWrapper(c *gin.Context) {
 	handler.UserListHandler(c)
 }
 
+func userDelete(c *gin.Context) {
+	handler.UserDeleteHandler(c)
+}
 func main() {
 	Database.ConDb()
 
@@ -91,6 +94,7 @@ func main() {
 			user.POST("/userdetail", middle.VersionMiddleWare(), TestHandler)
 			user.POST("/add", userCreateWrapper)
 			user.GET("/list", userListWrapper)
+			user.DELETE("/delete/:id", userDelete)
 		}
 	}
 
